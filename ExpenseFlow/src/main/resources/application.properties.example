@@ -1,0 +1,14 @@
+spring.application.name=expense-tracker
+server.port=8080
+
+spring.datasource.url=jdbc:postgresql://your-neon-host/neondb?sslmode=require
+spring.datasource.username=your_neon_username
+spring.datasource.password=your_neon_password
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.show-sql=true
+spring.jpa.open-in-view=false
+
+jwt.secret=your_jwt_secret_minimum_32_characters
+jwt.expiration=86400000
