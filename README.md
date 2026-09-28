@@ -97,43 +97,145 @@ json
 }
 
 
+## 🛠️ Local Setup & Installation
 
-Local Setup & Installation
-Prerequisites
-JDK 17 or higher
-Git
-PostgreSQL instance (or Neon database connection string)
-1. Clone the repository
+### Prerequisites
+
+Make sure you have the following installed:
+
+* **JDK 17 or higher**
+* **Git**
+* **Maven** (optional — Maven Wrapper is included)
+* **Docker** (optional, only if you want to run the application in a container)
+* A **PostgreSQL database** or **Neon PostgreSQL** database
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/priyagupta35/ExpenseFlow.git
 cd ExpenseFlow/ExpenseFlow
-2. Configure Environment Variables / application.properties
-Set up your database credentials and JWT secret in src/main/resources/application.properties or as system environment variables:
-properties:-
-spring.datasource.url=jdbc:postgresql://<your-db-host>/<db-name>?sslmode=require
-spring.datasource.username=<your-username>
-spring.datasource.password=<your-password>
-jwt.secret=<your-256-bit-secret-key>
+```
+
+### 2. Configure Environment Variables
+
+ExpenseFlow does not require database credentials or the JWT secret to be stored directly in `application.properties`.
+
+The application reads the following environment variables:
+
+```text
+DB_URL
+DB_USERNAME
+DB_PASSWORD
+JWT_SECRET
+```
+
+Your `src/main/resources/application.properties` should contain:
+
+```properties
+spring.application.name=expense-tracker
+
+server.port=${PORT:8080}
+
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.open-in-view=false
+
+jwt.secret=${JWT_SECRET}
 jwt.expiration=86400000
-3. Run the Application
-On Windows:
+```
 
-cmd
+**Do not commit database passwords or JWT secrets to GitHub.**
+
+#### Windows CMD
+
+Set the variables for the current terminal session:
+
+```cmd
+set DB_URL=jdbc:postgresql://<your-neon-host>/neondb?sslmode=require
+set DB_USERNAME=<your-username>
+set DB_PASSWORD=<your-password>
+set JWT_SECRET=<your-secret-key>
+```
+
+Then start the application:
+
+```cmd
 mvnw.cmd spring-boot:run
-On Linux / macOS:
-bash
+```
+
+#### Windows PowerShell
+
+```powershell
+$env:DB_URL="jdbc:postgresql://<your-neon-host>/neondb?sslmode=require"
+$env:DB_USERNAME="<your-username>"
+$env:DB_PASSWORD="<your-password>"
+$env:JWT_SECRET="<your-secret-key>"
+```
+
+Then:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+#### Linux / macOS
+
+```bash
+export DB_URL="jdbc:postgresql://<your-neon-host>/neondb?sslmode=require"
+export DB_USERNAME="<your-username>"
+export DB_PASSWORD="<your-password>"
+export JWT_SECRET="<your-secret-key>"
+```
+
+Then:
+
+```bash
 ./mvnw spring-boot:run
-The application will start at: http://localhost:8080
+```
 
-🐳 Docker Deployment
-To build and run the Docker container locally:
+The application will start at:
 
-# Build the Docker image
-docker build -t expenseflow:latest -f ExpenseFlow/Dockerfile .
-# Run the container on port 8080
-docker run -p 8080:8080 expenseflow:latest
+```text
+http://localhost:8080
+```
 
+### 3. Run with Docker
 
-GitHub: @priyagupta35
-Project: ExpenseFlow Repository
+To build the Docker image from the project directory:
 
+```bash
+docker build -t expenseflow .
+```
 
+Run the container by supplying the required environment variables:
+
+```bash
+docker run --name expenseflow-api -p 8080:8080 ^
+  -e DB_URL="<your-neon-jdbc-url>" ^
+  -e DB_USERNAME="<your-neon-username>" ^
+  -e DB_PASSWORD="<your-neon-password>" ^
+  -e JWT_SECRET="<your-jwt-secret>" ^
+  expenseflow
+```
+
+For Linux/macOS, use:
+
+```bash
+docker run --name expenseflow-api -p 8080:8080 \
+  -e DB_URL="<your-neon-jdbc-url>" \
+  -e DB_USERNAME="<your-neon-username>" \
+  -e DB_PASSWORD="<your-neon-password>" \
+  -e JWT_SECRET="<your-jwt-secret>" \
+  expenseflow
+```
+
+The API will then be available at:
+
+```text
+http://localhost:8080
+```
