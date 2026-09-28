@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.priya.dto.TransactionRequest;
 import com.priya.dto.TransactionResponse;
+import com.priya.exception.ForbiddenException;
+import com.priya.exception.ResourceNotFoundException;
 import com.priya.model.Category;
 import com.priya.model.Transaction;
 import com.priya.model.User;
@@ -80,8 +82,14 @@ public class TransactionService {
 
         Category category = categoryRepository
                 .findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Category not found"));
+
+        // Make sure the logged-in user owns this category
+        if (category.getUser().getId() != user.getId()) {
+            throw new ForbiddenException(
+                    "Not authorised to use this category");
+        }
 
         Transaction transaction = new Transaction();
 
@@ -105,12 +113,12 @@ public class TransactionService {
 
         Transaction transaction = transactionRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Transaction not found"));
 
         // Make sure the logged-in user owns this transaction
         if (transaction.getUser().getId() != user.getId()) {
-            throw new RuntimeException(
+            throw new ForbiddenException(
                     "Not authorised to delete this transaction");
         }
 

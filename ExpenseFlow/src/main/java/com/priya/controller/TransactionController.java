@@ -2,7 +2,6 @@ package com.priya.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,17 +18,16 @@ import com.priya.dto.TransactionResponse;
 import com.priya.model.User;
 import com.priya.service.TransactionService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
-    @Autowired
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
 
-    public TransactionController() {
-    }
-
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(
+            TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
@@ -61,11 +59,13 @@ public class TransactionController {
     // Create transaction
     @PostMapping
     public ResponseEntity<TransactionResponse> create(
-            @RequestBody TransactionRequest request,
+            @Valid @RequestBody TransactionRequest request,
             @AuthenticationPrincipal User user) {
 
         return ResponseEntity.ok(
-                transactionService.createTransaction(request, user)
+                transactionService.createTransaction(
+                        request,
+                        user)
         );
     }
 

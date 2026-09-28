@@ -34,18 +34,23 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        String email = request.getEmail()
+                .trim()
+                .toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
             throw new RuntimeException(
-                    "Email already registered: " + request.getEmail());
+                    "Email already registered: " + email);
         }
 
         User user = new User();
 
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
+        user.setEmail(email);
 
         user.setPassword(
-                passwordEncoder.encode(request.getPassword()));
+                passwordEncoder.encode(
+                        request.getPassword()));
 
         user.setRole("USER");
 
@@ -55,21 +60,26 @@ public class AuthService {
 
         return new AuthResponse(
                 token,
-                "USER",
+                user.getRole(),
                 "Registration successful");
     }
 
     public AuthResponse login(AuthRequest request) {
 
+        String email = request.getEmail()
+                .trim()
+                .toLowerCase();
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        email,
                         request.getPassword()));
 
         User user = userRepository
-                .findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException(
-                        "User not found"));
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found"));
 
         String token = jwtUtil.generateToken(user);
 

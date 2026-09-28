@@ -1,9 +1,7 @@
 package com.priya.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,56 +12,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.priya.model.Category;
+import com.priya.dto.CategoryRequest;
+import com.priya.dto.CategoryResponse;
 import com.priya.model.User;
 import com.priya.service.CategoryService;
 
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
-
-    public CategoryController() {
-    }
+    private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getCategories(
+    public ResponseEntity<List<CategoryResponse>> getCategories(
             @AuthenticationPrincipal User user) {
+
         return ResponseEntity.ok(
-            categoryService.getUserCategories(user));
+                categoryService.getUserCategories(user));
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(
-            @RequestBody Map<String, String> body,
+    public ResponseEntity<CategoryResponse> createCategory(
+            @Valid @RequestBody CategoryRequest request,
             @AuthenticationPrincipal User user) {
+
         return ResponseEntity.ok(
-            categoryService.createCategory(
-                body.get("name"),
-                body.get("type"),
-                user));
+                categoryService.createCategory(
+                        request.getName(),
+                        request.getType(),
+                        user));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(
             @PathVariable int id,
             @AuthenticationPrincipal User user) {
+
         categoryService.deleteCategory(id, user);
+
         return ResponseEntity.noContent().build();
-    }
-
-    public CategoryService getCategoryService() {
-        return categoryService;
-    }
-
-    public void setCategoryService(CategoryService categoryService) {
-        this.categoryService = categoryService;
     }
 }
