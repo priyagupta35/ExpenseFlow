@@ -95,6 +95,7 @@ json
   "email": "priya@example.com",
   "password": "password123"
 }
+
  Local Setup & Installation
 Prerequisites
 JDK 17 or higher
@@ -105,10 +106,7 @@ git clone https://github.com/priyagupta35/ExpenseFlow.git
 cd ExpenseFlow/ExpenseFlow
 2. Configure Environment Variables / application.properties
 Set up your database credentials and JWT secret in src/main/resources/application.properties or as system environment variables:
-
-properties
-
-
+properties:-
 spring.datasource.url=jdbc:postgresql://<your-db-host>/<db-name>?sslmode=require
 spring.datasource.username=<your-username>
 spring.datasource.password=<your-password>
@@ -118,22 +116,14 @@ jwt.expiration=86400000
 On Windows:
 
 cmd
-
-
 mvnw.cmd spring-boot:run
 On Linux / macOS:
-
 bash
-
-
 ./mvnw spring-boot:run
 The application will start at: http://localhost:8080
 
 🐳 Docker Deployment
 To build and run the Docker container locally:
-
-bash
-
 
 # Build the Docker image
 docker build -t expenseflow:latest -f ExpenseFlow/Dockerfile .
