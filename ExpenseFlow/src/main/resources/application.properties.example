@@ -1,4 +1,4 @@
-spring.application.name=expenseflow
+spring.application.name=ExpenseFlow
 server.port=${PORT:8080}
 
 spring.datasource.url=jdbc:postgresql://your-neon-host/neondb?sslmode=require
