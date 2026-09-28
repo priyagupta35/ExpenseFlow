@@ -96,7 +96,9 @@ json
   "password": "password123"
 }
 
- Local Setup & Installation
+
+
+Local Setup & Installation
 Prerequisites
 JDK 17 or higher
 Git
@@ -133,6 +135,5 @@ docker run -p 8080:8080 expenseflow:latest
 
 GitHub: @priyagupta35
 Project: ExpenseFlow Repository
-
 
 
